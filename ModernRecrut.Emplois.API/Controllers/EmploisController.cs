@@ -15,17 +15,29 @@ namespace ModernRecrut.Emplois.API.Controllers
         {
             _context = context;
         }
+
         [HttpGet]
-        public async Task <ActionResult<IEnumerable<Emploi>>> GetEmplois([FromQuery] string? intitule)
+        public async Task<ActionResult<IEnumerable<Emploi>>> GetEmplois([FromQuery] string? intitule)
         {
-            IQueryable<Emploi> requete = _context.Emplois;
-            if (!string.IsNullOrEmpty(intitule))
+            // Récupérer la date du jour, sans l'heure.
+            var aujourdHui = DateTime.Today;
+
+            // Commencer par les offres valides aujourd'hui.
+            IQueryable<Emploi> requete = _context.Emplois.Where(e =>e.DateDebutAffichage.Date <= aujourdHui &&
+                    e.DateFinAffichage.Date >= aujourdHui);
+
+            // Appliquer le filtre par intitulé s'il est fourni.
+            if (!string.IsNullOrWhiteSpace(intitule))
             {
-                requete = requete.Where(e => e.Intitule.Contains(intitule));
+                requete = requete.Where(e =>
+                    e.Intitule.Contains(intitule));
             }
+
             var emplois = await requete.ToListAsync();
+
             return Ok(emplois);
         }
+
 
 
         [HttpGet("{id:int}")]
