@@ -1,0 +1,6 @@
+@ModernRecrut.Emplois.API_HostAddress = http://localhost:5263
+
+GET {{ModernRecrut.Emplois.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
