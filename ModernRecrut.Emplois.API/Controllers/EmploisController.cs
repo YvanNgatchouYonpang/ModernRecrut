@@ -74,20 +74,22 @@ namespace ModernRecrut.Emplois.API.Controllers
                 emploi);
         }
 
-
         [HttpPut("{id:int}")]
         public async Task<IActionResult> PutEmploi(int id, Emploi emploi)
         {
             if (id != emploi.Id)
             {
-                return BadRequest(
-                    "L'identifiant de l'URL ne correspond pas à celui de l'offre.");
+                return BadRequest("L'identifiant de l'URL ne correspond pas à celui de l'offre.");
+            }
+
+            if (emploi.DateDebutAffichage == default || emploi.DateFinAffichage == default)
+            {
+                return BadRequest("Les dates de début et de fin d'affichage sont obligatoires.");
             }
 
             if (emploi.DateFinAffichage.Date < emploi.DateDebutAffichage.Date)
             {
-                return BadRequest(
-                    "La date de fin d'affichage doit être supérieure ou égale à la date de début.");
+                return BadRequest("La date de fin d'affichage doit être supérieure ou égale à la date de début.");
             }
 
             var emploiExistant = await _context.Emplois.FindAsync(id);
