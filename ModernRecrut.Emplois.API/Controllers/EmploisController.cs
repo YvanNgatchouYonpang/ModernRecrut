@@ -55,16 +55,23 @@ namespace ModernRecrut.Emplois.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Emploi>> PostEmploi(Emploi emploi)
         {
+            if (emploi.DateDebutAffichage == default || emploi.DateFinAffichage == default)
+            {
+                return BadRequest("Les dates de début et de fin d'affichage sont obligatoires.");
+            }
+
             if (emploi.DateFinAffichage.Date < emploi.DateDebutAffichage.Date)
             {
-                return BadRequest(
-                    "La date de fin d'affichage doit être supérieure ou égale à la date de début.");
+                return BadRequest("La date de fin d'affichage doit être supérieure ou égale à la date de début.");
             }
 
             _context.Emplois.Add(emploi);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetEmploi),new { id = emploi.Id },emploi);
+            return CreatedAtAction(
+                nameof(GetEmploi),
+                new { id = emploi.Id },
+                emploi);
         }
 
 
