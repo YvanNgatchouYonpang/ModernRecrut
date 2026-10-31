@@ -1,5 +1,7 @@
 using ModernRecrut.Emplois.API.Data;
 using Microsoft.EntityFrameworkCore;
+using ModernRecrut.Emplois.API.Interfaces;
+using ModernRecrut.Emplois.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +15,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IEmploiService, EmploiService>();
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
