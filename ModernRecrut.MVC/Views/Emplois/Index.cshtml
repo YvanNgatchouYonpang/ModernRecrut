@@ -1,0 +1,84 @@
+@model IEnumerable<ModernRecrut.MVC.Models.Emplois>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Offres d'Emplois</h1>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["Success"]
+    </div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary">Nouvelle offre</a>
+</p>
+
+<hr />
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Recherche: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" placeholder="Rechercher par intitulé..."/>
+            <input type="submit" value="Recherche" class="btn btn-secondary" /> |
+            <a asp-action="Index">Toutes les offres</a>
+        </p>
+    </div>
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Intitule)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateDebutAffichage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateFinAffichage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.Intitule)
+            </td>
+            <td>
+                    @item.DateDebutAffichage.ToString("dd/MM/yyyy")
+            </td>
+            <td>
+                @item.DateFinAffichage.ToString("dd/MM/yyyy")
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Description)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>|
+
+                    <form asp-controller="Favoris"
+                          asp-action="AjouterFavoris"
+                          method="post">
+                        <input type="hidden" name="offreId" value="@item.Id" />
+
+                        <button type="submit" class="btn btn-outline-primary">
+                            Ajouter aux favoris
+                        </button>
+                    </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

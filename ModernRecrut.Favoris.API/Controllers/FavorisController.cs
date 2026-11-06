@@ -59,30 +59,6 @@ namespace ModernRecrut.Favoris.API.Controllers
             return Ok("Offre ajoutée aux favoris.");
         }
 
-        // PUT : api/Favoris/1
-        [HttpPut("{ancienId}")]
-        public async Task<IActionResult> ModifierFavori(
-            int ancienId,
-            [FromBody] FavorisRequete request)
-        {
-            string? adresseIP = ObtenirAdresseIP();
-
-            if (adresseIP == null)
-                return BadRequest("Impossible de déterminer l'adresse IP.");
-
-            bool resultat = await _favorisService.ModifierFavori(
-                adresseIP,
-                ancienId,
-                request.OffreId
-            );
-
-            if (!resultat)
-                return BadRequest(
-                    "Modification impossible. Vérifiez les identifiants des offres."
-                );
-
-            return Ok("Favori modifié avec succès.");
-        }
 
         // DELETE : api/Favoris/1
         [HttpDelete("{emploiId}")]

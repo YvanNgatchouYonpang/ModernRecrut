@@ -69,7 +69,7 @@ namespace ModernRecrut.Favoris.API.Services
             return GetFavoris(adresseIP);
         }
 
-        // POST : ajouter une offre aux favoris
+        // POST : ajouter une offre aux favoris api
         public async Task<bool> AjouterFavori(
             string adresseIP,
             int emploiId)
@@ -92,45 +92,6 @@ namespace ModernRecrut.Favoris.API.Services
             }
 
             favori.ListeEmplois.Add(emploi);
-
-            Enregistrer(favori);
-
-            return true;
-        }
-
-        // PUT : remplacer une offre favorite par une autre
-        public async Task<bool> ModifierFavori(
-            string adresseIP,
-            int ancienId,
-            int nouvelId)
-        {
-            Favori favori = GetFavoris(adresseIP);
-
-            EmploiDto? ancienEmploi =
-                favori.ListeEmplois.FirstOrDefault(e => e.Id == ancienId);
-
-            if (ancienEmploi == null)
-            {
-                return false;
-            }
-
-            // Vérifier que la nouvelle offre n'est pas déjà favorite
-            if (favori.ListeEmplois.Any(e => e.Id == nouvelId))
-            {
-                return false;
-            }
-
-            EmploiDto? nouvelEmploi =
-                await _offreApiService.GetEmploiParId(nouvelId);
-
-            if (nouvelEmploi == null)
-            {
-                return false;
-            }
-
-            int index = favori.ListeEmplois.IndexOf(ancienEmploi);
-
-            favori.ListeEmplois[index] = nouvelEmploi;
 
             Enregistrer(favori);
 
