@@ -1,0 +1,19 @@
+﻿@model ModernRecrut.MVC.Models.HttpCodeErrorViewModel
+
+@{
+    ViewData["Title"] = "Page introuvable";
+}
+
+<div class="container text-center mt-5">
+    <h1 class="display-1 text-danger">@Model.StatusCode</h1>
+
+    <h2>Page introuvable !</h2>
+
+    <p>La page que vous recherchez n'existe pas ou a été déplacée.</p>
+
+    @* <a asp-controller="Emplois"
+       asp-action="Index"
+       class="btn btn-primary">
+        Retour à l'accueil
+    </a> *@
+</div>

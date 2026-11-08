@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ModernRecrut.MVC.Interfaces;
 using ModernRecrut.MVC.Models;
+using System.Diagnostics;
 
 namespace ModernRecrut.MVC.Controllers
 {
@@ -11,10 +12,13 @@ namespace ModernRecrut.MVC.Controllers
         private readonly IEmploisService _emploisService;
         private readonly IFavorisService _favorisService;
 
-        public EmploisController(IEmploisService emploisService, IFavorisService favorisService)
+        private readonly ILogger<EmploisController> _logger;
+
+        public EmploisController(IEmploisService emploisService, IFavorisService favorisService, ILogger<EmploisController> logger)
         {
             _emploisService = emploisService;
             _favorisService = favorisService;
+            _logger = logger;
         }
 
         // GET: EmploisController
@@ -24,8 +28,7 @@ namespace ModernRecrut.MVC.Controllers
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                emplois = emplois.Where(e => e.Intitule.ToLower().Contains(searchString.ToLower())
-                                       || e.Description.ToLower().Contains(searchString.ToLower()));
+                emplois = emplois.Where(e => e.Intitule.ToLower().Contains(searchString.ToLower()));
             }
             return View(emplois);
         }
@@ -49,12 +52,29 @@ namespace ModernRecrut.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Intitule,DateDebutAffichage,DateFinAffichage,Description")] Emplois emplois)
         {
-          if(ModelState.IsValid)
+            bool resultat = await _emploisService.Ajouter(emplois);
+
+
+            if (resultat)
             {
-                await _emploisService.Ajouter(emplois);
-                return RedirectToAction(nameof(Index));
+                TempData["Message"] = "Offre d'emploi ajoutée.";
+
+                _logger.LogInformation(
+                    "L'ajout de l'offre d'emploi {Intitule} réussie.",
+                    emplois.Intitule
+                );
             }
-            return View(emplois);
+            else
+            {
+                TempData["Message"] = "Impossible d'ajouter l'offre.";
+
+                _logger.LogWarning(
+                    "Échec de l'ajout de l'offre d'emploi ."
+                );
+            }
+
+
+            return RedirectToAction(nameof(Index));
         }
 
 
@@ -71,13 +91,27 @@ namespace ModernRecrut.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("Id,Intitule,DateDebutAffichage,DateFinAffichage,Description")] Emplois emplois,int id)
         {
-            
-            if(ModelState.IsValid)
+            bool resultat = await _emploisService.Modifier(emplois);
+
+            if (resultat)
             {
-                await _emploisService.Modifier(emplois);
-                return RedirectToAction(nameof(Index));
+                TempData["Message"] = "Offre d'emploi modifiée.";
+
+                _logger.LogInformation(
+                    "Modification de l'offre d'emploi {Id} réussie.",
+                    emplois.Id
+                );
             }
-            return View(emplois);
+            else
+            {
+                TempData["Message"] = "Impossible de modifier l'offre.";
+
+                _logger.LogWarning(
+                    "Échec de la modification de l'offre d'emploi {Id}.",
+                    emplois.Id
+                );
+            }
+            return RedirectToAction(nameof(Index));
         }
 
 
@@ -93,10 +127,28 @@ namespace ModernRecrut.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Emplois emplois)
         {
-            
-                await _emploisService.Supprimer(emplois);
-                return RedirectToAction(nameof(Index));
-            
+            bool resultat = await _emploisService.Supprimer(emplois);
+
+            if (resultat)
+            {
+                TempData["Message"] = "Offre d'emploi supprimée.";
+
+                _logger.LogInformation(
+                    "Suppression de l'offre d'emploi {Id} réussie.",
+                    emplois.Id
+                );
+            }
+            else
+            {
+                TempData["Message"] = "Impossible de supprimer l'offre.";
+
+                _logger.LogWarning(
+                    "Échec de la suppression de l'offre d'emploi {Id}.",
+                    emplois.Id
+                );
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
     }

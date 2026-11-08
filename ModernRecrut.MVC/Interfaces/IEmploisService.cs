@@ -4,10 +4,10 @@ namespace ModernRecrut.MVC.Interfaces
 {
     public interface IEmploisService
     {
-        Task Ajouter(Emplois emplois);
+        Task<bool> Ajouter(Emplois emplois);
         Task<Emplois> ObtenirSelonId(int id);
-        Task Modifier(Emplois emplois);
-        Task Supprimer(Emplois emplois);
+        Task<bool> Modifier(Emplois emplois);
+        Task<bool> Supprimer(Emplois emplois);
         Task<IEnumerable<Emplois>> ObtenirTout();
     }
 }

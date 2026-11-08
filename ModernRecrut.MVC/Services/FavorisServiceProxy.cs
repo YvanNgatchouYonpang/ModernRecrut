@@ -10,10 +10,12 @@ namespace ModernRecrut.MVC.Services
         private readonly HttpClient _httpClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _favorisApiUrl="api/favoris/";
+        private readonly ILogger<FavorisServiceProxy> _logger;
 
-        public FavorisServiceProxy(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public FavorisServiceProxy(HttpClient httpClient, ILogger<FavorisServiceProxy> logger, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
+            _logger = logger;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -36,11 +38,9 @@ namespace ModernRecrut.MVC.Services
             AjouterAdresseIpDansHeaders();
 
             var response = await _httpClient.PostAsJsonAsync(_favorisApiUrl, new { OffreId = offreId });
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Erreur lors de l'appel à l'API : {response.StatusCode}");
-            }
-
+           
+            JournalError.AppliquerJournal(_logger, response, "API Favoris");
+           
             return response.IsSuccessStatusCode;
 
         }
@@ -52,6 +52,7 @@ namespace ModernRecrut.MVC.Services
             var response = await _httpClient.DeleteAsync($"{_favorisApiUrl}{emploiId}");
             if (!response.IsSuccessStatusCode)
             {
+                JournalError.AppliquerJournal(_logger, response, "API Favoris");
                 throw new Exception($"Erreur lors de l'appel à l'API : {response.StatusCode}");
             }
             return response.IsSuccessStatusCode;
@@ -65,6 +66,7 @@ namespace ModernRecrut.MVC.Services
 
             if (!response.IsSuccessStatusCode)
             {
+                JournalError.AppliquerJournal(_logger, response, "API Favoris");
                 throw new Exception($"Erreur lors de l'appel à l'API : {response.StatusCode}");
             }
             var favoris = await response.Content.ReadFromJsonAsync<Favoris>();

@@ -1,0 +1,27 @@
+﻿
+@model ModernRecrut.MVC.Models.HttpCodeErrorViewModel
+
+@{
+    ViewData["Title"] = "Erreur";
+}
+
+<div class="container mt-5 text-center">
+
+    <h1 class="display-1 text-danger">@Model.StatusCode</h1>
+    <h2 class="text-danger">@Model.ErrorMessage</h2>
+
+    @if (Model.ShowRequestId)
+    {
+        <p>
+            Identifiant de la requête :
+            <strong>@Model.RequestId</strong>
+        </p>
+    }
+
+    <a asp-controller="Emplois"
+       asp-action="Index"
+       class="btn btn-primary">
+        Retour aux offre d'emploi
+    </a>
+
+</div>

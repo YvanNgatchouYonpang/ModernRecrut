@@ -9,10 +9,12 @@ namespace ModernRecrut.MVC.Controllers
     public class FavorisController : Controller
     {
         private readonly IFavorisService _favorisService;
+        private readonly ILogger<FavorisController> _logger;
 
-        public FavorisController(IFavorisService favorisService)
+        public FavorisController(IFavorisService favorisService,ILogger<FavorisController> logger)
         {
             _favorisService = favorisService;
+            _logger = logger;
         }
         // GET: FavorisController
         public async Task<IActionResult> Index()
@@ -30,8 +32,23 @@ namespace ModernRecrut.MVC.Controllers
 
             bool resultat = await _favorisService.Ajouter(offreId);
 
+
             if (resultat)
-                TempData["Success"] = "Offre ajoutée aux favoris.";
+            {
+                TempData["Message"] = "Offre d'emploi ajoutée aux favoris.";
+
+                _logger.LogInformation(
+                    "L'ajout de l'offre d'emploi aux favoris réussie."
+                );
+            }
+            else
+            {
+                TempData["Message"] = "l'offre existe deja dans les favoris.";
+
+                _logger.LogWarning(
+                    "Échec de l'ajout de l'offre d'emploi aux favoris."
+                );
+            }
 
             return RedirectToAction("Index", "Emplois");
 
@@ -47,9 +64,22 @@ namespace ModernRecrut.MVC.Controllers
         {
             bool resultat = await _favorisService.Supprimer(emploiId);
 
-            TempData["Message"] = resultat
-            ? "Favori supprimé."
-            : "Impossible de supprimer ce favori.";
+            if (resultat)
+            {
+                TempData["Message"] = "Favori supprimé.";
+
+                _logger.LogInformation(
+                    "Suppression du favori réussie."
+                );
+            }
+            else
+            {
+                TempData["Message"] = "Impossible de supprimer le favori.";
+
+                _logger.LogWarning(
+                    "Échec de la suppression du favori ."
+                );
+            }
 
             return RedirectToAction(nameof(Index));
           
