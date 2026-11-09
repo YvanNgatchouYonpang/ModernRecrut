@@ -68,8 +68,6 @@ namespace ModernRecrut.Emplois.API.Controllers
             return Ok(emploi);
         }
 
-
-
         /// <summary>
         /// Ajoute une nouvelle offre d'emploi dans la base de données.
         /// </summary>
@@ -86,11 +84,11 @@ namespace ModernRecrut.Emplois.API.Controllers
         ///      "dateFinAffichage": "2026-11-08T10:05:40.162Z",
         ///      "description": "Developpeur .Net Maui, React native"
         /// }
-        /// /remarks>
-
+        /// </remarks>
         /// <response code="201">offre d'emploi ajoutée avec succès</response>
         /// <response code="401">erreur de validation</response>
         /// <response code="500">Oops! le service est indisponible pour le moment</response>
+
         [HttpPost]
         public async Task<ActionResult<Emploi>> PostEmploi(Emploi emploi)
         {

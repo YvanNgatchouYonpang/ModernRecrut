@@ -53,7 +53,7 @@ builder.Services.AddSwaggerGen((c =>
         },
         Contact = new OpenApiContact
         {
-            Name = "Mamadou Diallo et Yvan Ngatchou",
+            Name = "Mamadou Diallo et Yvan Ngantchou",
             Email = "modern.it@modern-ti.com",
             Url = new Uri("https://modern-ti.com/")
         }
